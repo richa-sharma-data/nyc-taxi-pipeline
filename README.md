@@ -40,23 +40,21 @@ Streamlit Cloud          — free public deployment
 ## Project Structure
 ```
 nyc-taxi-pipeline/
-├── include/
-│   ├── s3_uploader.py        # downloads parquet from NYC TLC, uploads to S3
-│   └── redshift_loader.py    # COPY command from S3 into Redshift staging
 ├── dags/
-│   └── nyc_taxi_pipeline.py  # Airflow DAG — orchestrates extract → load
-├── nyc_taxi_dbt/
-│   ├── models/
-│   │   ├── staging/
-│   │   │   ├── stg_yellow_taxi.sql   # cleans raw data, filters bad dates
-│   │   │   └── schema.yml            # dbt tests
-│   │   └── marts/
-│   │       └── mart_daily_trips.sql  # daily aggregations for dashboard
-└── app.py                    # Streamlit dashboard
+│   └── nyc_taxi_pipeline.py      # Airflow DAG — extract → load
+├── include/
+│   ├── s3_uploader.py            # downloads parquet, uploads to S3
+│   └── redshift_loader.py        # COPY from S3 into Redshift
+├── models/
+│   ├── staging/
+│   │   ├── stg_yellow_taxi.sql   # cleans raw data, filters bad dates
+│   │   └── schema.yml            # dbt tests
+│   └── marts/
+│       └── mart_daily_trips.sql  # daily aggregations
+├── dbt_project.yml
+├── app.py                        # Streamlit dashboard
+└── requirements.txt
 ```
-> **Note:** S3 ingestion, Airflow DAGS and dbt models live in separate repos.
-> This report contains the Streamlit dashboard only.
-
 ---
 
 ## Data Pipeline
