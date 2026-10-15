@@ -6,7 +6,7 @@ and visualises NYC Yellow Taxi trip data using a modern cloud data stack.
 🔗 **Live Dashboard:** [nyc-taxi-richa.streamlit.app](https://richa-nyc-taxi-dashboard.streamlit.app)
 
 ---
-
+```
 ## Architecture
 
 NYC TLC Public Data (Parquet)
@@ -20,7 +20,7 @@ dbt Core              — staging + mart transformations
 Streamlit              — interactive analytics dashboard
 ↓
 Streamlit Cloud          — free public deployment
-
+```
 ---
 
 ## Tech Stack
@@ -38,7 +38,7 @@ Streamlit Cloud          — free public deployment
 ---
 
 ## Project Structure
-
+```
 nyc-taxi-pipeline/
 ├── include/
 │   ├── s3_uploader.py        # downloads parquet from NYC TLC, uploads to S3
@@ -53,7 +53,7 @@ nyc-taxi-pipeline/
 │   │   └── marts/
 │   │       └── mart_daily_trips.sql  # daily aggregations for dashboard
 └── app.py                    # Streamlit dashboard
-
+```
 > **Note:** S3 ingestion, Airflow DAGS and dbt models live in separate repos.
 > This report contains the Streamlit dashboard only.
 
@@ -109,11 +109,11 @@ cp .env.example .env
 
 # 4. Run dashboard
 streamlit run app.py
+```
+## About
 
-About
+Built by **Richa** — ETL Developer transitioning into cloud data engineering.
 
-Built by Richa — ETL Developer transitioning into cloud data engineering.
-
-Connect on Linkedin (https://www.linkedin.com/in/richa-sharma-65ba079/)
+Connect on [Linkedin](https://www.linkedin.com/in/richa-sharma-65ba079/)
 
 ---
