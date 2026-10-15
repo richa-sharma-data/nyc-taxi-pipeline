@@ -2,3 +2,8 @@
 __pycache__/
 *.pyc
 .DS_Store
+target/
+dbt_packages/
+logs/
+dags/airflow_env/
+dags/.airflowignore
