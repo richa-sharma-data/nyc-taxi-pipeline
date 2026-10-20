@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # ── Redshift connection ───────────────────────────────────
-@st.cache_resource
+@st.cache_resource(ttl=600) # Fresh connection at least every 10 mins, avoids stale paused-warehouse connections
 def get_connection():
     return redshift_connector.connect(
         host=os.environ['REDSHIFT_HOST'],
@@ -23,10 +23,10 @@ def get_connection():
         user=os.environ['REDSHIFT_USER'],
         password=os.environ['REDSHIFT_PASSWORD'],
         port=int(os.environ['REDSHIFT_PORT'])
+	timeout=30 #fail fast instead of hanging forever on a paused warehouse 
     )
 
-@st.cache_data(ttl=3600)   # cache query results for 1 hour
-def load_data(query: str) -> pd.DataFrame:
+def _run_query(query: str) -> pd.DataFrame:
     conn   = get_connection()
     cursor = conn.cursor()
     cursor.execute(query)
@@ -34,19 +34,37 @@ def load_data(query: str) -> pd.DataFrame:
     columns = [desc[0] for desc in cursor.description]
     return pd.DataFrame(rows, columns=columns)
 
+@st.cache_data(ttl=3600)   # cache query results for 1 hour
+def load_data(query: str) -> pd.DataFrame:
+    try:
+        return _run_query(query)
+    except Exception:
+        get_connection.clear()  # drop the possibly stale connection
+        return _run_query(query)  # retry once on a fresh connection
+
+
 # ── Load data ─────────────────────────────────────────────
-df = load_data("""
-    SELECT
-        trip_date,
-        total_trips,
-        total_revenue,
-        avg_fare,
-        avg_distance_miles,
-        avg_duration_mins,
-        avg_tip
-    FROM taxi_marts.mart_daily_trips
-    ORDER BY trip_date
-""")
+
+try:
+    df = load_data("""
+        SELECT
+            trip_date,
+            total_trips,
+            total_revenue,
+            avg_fare,
+            avg_distance_miles,
+            avg_duration_mins,
+            avg_tip
+        FROM taxi_marts.mart_daily_trips
+        ORDER BY trip_date
+    """)
+except Exception:
+    st.title("🚕 NYC Taxi Analytics Dashboard")
+    st.warning(
+        "Data is temporarily unavailable while the warehouse is paused "
+        "for cost control. Please check back in a little while."
+    )
+    st.stop()
 
 df['trip_date'] = pd.to_datetime(df['trip_date'])
 
