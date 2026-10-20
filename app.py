@@ -22,7 +22,7 @@ def get_connection():
         database=os.environ['REDSHIFT_DB'],
         user=os.environ['REDSHIFT_USER'],
         password=os.environ['REDSHIFT_PASSWORD'],
-        port=int(os.environ['REDSHIFT_PORT'])
+        port=int(os.environ['REDSHIFT_PORT']),
 	timeout=30 #fail fast instead of hanging forever on a paused warehouse 
     )
 
