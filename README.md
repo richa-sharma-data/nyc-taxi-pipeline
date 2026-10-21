@@ -96,7 +96,7 @@ nyc-taxi-pipeline/
 
 ```bash
 # 1. Clone
-git clone https://github.com/YOUR_USERNAME/nyc-taxi-dashboard.git
+git clone https://github.com/richa-sharma-data/nyc-taxi-pipeline.git
 
 # 2. Install dependencies
 pip install -r requirements.txt
